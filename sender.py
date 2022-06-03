@@ -73,7 +73,7 @@ def Protocol():
         try:
             ackPacket = clientSocket.recvfrom(4096)[0].decode()
             end = time.time() # returns the time for when the
-            ackNumber, checkSum = ParseAckMessage(ackPacket, compute_checksum(dataPacket))
+            ackNumber, checkSum = ParseAckMessage(ackPacket, compute_checksum(dataPacket.decode("ascii")))
 
             if (slowStart and ackNumber == seqNum and checkSum):
                 prevMSS = MSS
