@@ -34,6 +34,8 @@ def Protocol():
     congestionAvoidance = False
     stasis = False
 
+    firstSuccess = False
+
     prevMSS = 2
     MSS = 2
     startPos = 0
@@ -42,9 +44,9 @@ def Protocol():
     ackNumber = -1
 
     # Timer calculation related variables
-    estimate_time = 5 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
+    estimate_time = 3 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
     DevRTT = estimate_time/2 # initializing DevRTT to initial estimated RTT divided by 2, which will be updated accordingly once we get a sample RTT
-    timeout_interval = 5
+    timeout_interval = 3
     alpha = 0.125
     beta = 0.25
 
@@ -86,10 +88,13 @@ def Protocol():
                 startPos += MSS
                 seqNum += 1
 
-            SampleRTT = end - start
+            if (firstSuccess == False):
+                timeout_interval = time.time() - sendStart
+                firstSuccess = True
+            """SampleRTT = end - start
             DevRTT = ((1-beta) * DevRTT) + (beta*abs(SampleRTT-estimate_time))
             estimate_time = ((1-alpha) * estimate_time) + (alpha * SampleRTT)
-            timeout_interval = estimate_time + (4*DevRTT)
+            timeout_interval = estimate_time + (4*DevRTT)"""
         except socket.timeout:
             if ((slowStart == True) and (congestionAvoidance == False) and (stasis == False)):
                 MSS = prevMSS
