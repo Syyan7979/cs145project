@@ -25,7 +25,7 @@ def Protocol():
 
     # Receiving Accept Message
     acceptMessage = clientSocket.recvfrom(1024)
-    transactionID = int(acceptMessage.decode())
+    transactionID = int(acceptMessage.decode()[0])
 
     MSS = 1
     startPos = 0
@@ -53,7 +53,7 @@ def Protocol():
         clientSocket.sendto(dataPacket, (IP_address, receiverPort))
         start = time.time()
         try:
-            ackPacket = clientSocket.recvfrom(4096).decode()
+            ackPacket = clientSocket.recvfrom(4096).decode()[0]
             end = time.time() # returns the time for when the
             ackNumber, checkSum = ParseAckMessage(ackPacket)
             if (ackNumber == seqNum):
