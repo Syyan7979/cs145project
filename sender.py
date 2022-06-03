@@ -90,7 +90,7 @@ def Protocol():
 
             if (firstSuccess == False):
                 timeout_interval = time.time() - sendStart
-                MSS = len(full_payload)//(95/timeout_interval)
+                MSS = int(len(full_payload)//(95/timeout_interval))
                 timeout_interval += 0.125
                 congestionAvoidance = True
                 slowStart = False
