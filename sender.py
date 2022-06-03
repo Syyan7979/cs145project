@@ -38,6 +38,9 @@ def Protocol():
     MSS = 2
     startPos = 0
 
+    maxPos = 0
+    minPos = 0
+
     seqNum = 0
     ackNumber = -1
 
@@ -78,9 +81,9 @@ def Protocol():
                 MSS *= 2
                 seqNum += 1
             elif (congestionAvoidance and ackNumber == seqNum):
-                prevMSS = MSS
                 startPos += MSS
-                MSS += 1
+                minPos = MSS
+                MSS = int(mean(minPos, maxPos))
                 seqNum += 1
             else:
                 startPos += MSS
@@ -92,15 +95,17 @@ def Protocol():
             timeout_interval = estimate_time + (4*DevRTT)
         except socket.timeout:
             if ((slowStart == True) and (congestionAvoidance == False) and (stasis == False)):
-                MSS = prevMSS
                 if ackNumber > -1:
+                    maxPos = MSS
+                    minPos = prevMSS
+                    MSS = int(mean(minPos, maxPos))
                     slowStart = False
                     congestionAvoidance = True
-                    counter = 0
+                else:
+                    MSS = prevMSS
             elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
-                MSS = MSS - 1
-                congestionAvoidance = False
-                stasis = True
+                maxPos = MSS
+                MSS = int(mean(minPos, maxPos))
             timeout_interval *= 2
         print(f"elapsed time: {time.time()-sendStart}")
 
