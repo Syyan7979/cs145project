@@ -45,9 +45,9 @@ def Protocol():
     ackNumber = -1
 
     # Timer calculation related variables
-    estimate_time = 1 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
+    estimate_time = 3 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
     DevRTT = estimate_time/2 # initializing DevRTT to initial estimated RTT divided by 2, which will be updated accordingly once we get a sample RTT
-    timeout_interval = 1
+    timeout_interval = 3
     alpha = 0.125
     beta = 0.25
 
