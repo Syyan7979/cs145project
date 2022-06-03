@@ -69,14 +69,12 @@ def Protocol():
             ackPacket = clientSocket.recvfrom(4096)[0].decode()
             end = time.time() # returns the time for when the
             ackNumber, checkSum = ParseAckMessage(ackPacket)
-            if(ackNumber == seqNum):
-                print("KAYAWA BA")
 
-            if (slowStart and not congestionAvoidance and not stasis and ackNumber == seqNum):
+            if ((slowStart == True) and (congestionAvoidance == False) and (stasis == False) and (ackNumber == seqNum)):
                 prevMSS = MSS
                 MSS *= 2
                 seqNum += 1
-            elif (not slowStart and congestionAvoidance and not stasis and ackNumber == seqNum):
+            elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False) and (ackNumber == seqNum)):
                 prevMSS = MSS
                 MSS += 1
                 seqNum += 1
@@ -86,11 +84,11 @@ def Protocol():
             estimate_time = ((1-alpha) * estimate_time) + (alpha * SampleRTT)
             timeout_interval = estimate_time + (4*DevRTT)
         except socket.timeout:
-            if (slowStart and not congestionAvoidance and not stasis):
+            if ((slowStart == True) and (congestionAvoidance == False) and (stasis == False)):
                 MSS = prevMSS
                 slowStart = False
                 congestionAvoidance = True
-            elif (not slowStart and congestionAvoidance and not stasis):
+            elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
                 MSS = prevMSS
                 congestionAvoidance = False
                 stasis = True
