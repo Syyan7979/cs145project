@@ -72,10 +72,12 @@ def Protocol():
             ackNumber, checkSum = ParseAckMessage(ackPacket)
 
             if (slowStart and not congestionAvoidance and not stasis and ackNumber == seqNum):
+                print("fuck")
                 prevMSS = MSS
                 MSS *= 2
                 seqNum += 1
             elif (not slowStart and congestionAvoidance and not stasis and ackNumber == seqNum):
+                print("Yawa")
                 prevMSS = MSS
                 MSS += 1
                 seqNum += 1
@@ -85,7 +87,6 @@ def Protocol():
             estimate_time = ((1-alpha) * estimate_time) + (alpha * SampleRTT)
             timeout_interval = estimate_time + (4*DevRTT)
         except socket.timeout:
-            print("timeout")
             if (slowStart and not congestionAvoidance and not stasis):
                 MSS = prevMSS
                 slowStart = False
