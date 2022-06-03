@@ -99,7 +99,7 @@ def Protocol():
                     congestionAvoidance = True
                     counter = 0
             elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
-                MSS = prevMSS
+                MSS = MSS - 1
                 congestionAvoidance = False
                 stasis = True
             timeout_interval *= 2
