@@ -89,7 +89,7 @@ def Protocol():
             SampleRTT = end - start
             DevRTT = ((1-beta) * DevRTT) + (beta*abs(SampleRTT-estimate_time))
             estimate_time = ((1-alpha) * estimate_time) + (alpha * SampleRTT)
-            timeout_interval = estimate_time + (2*DevRTT)
+            timeout_interval = estimate_time + (4*DevRTT)
         except socket.timeout:
             if ((slowStart == True) and (congestionAvoidance == False) and (stasis == False)):
                 MSS = prevMSS
