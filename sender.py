@@ -101,7 +101,7 @@ def Protocol():
             elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
                 MSS = prevMSS
                 congestionAvoidance = False
-                slowStart = True
+                stasis = True
             timeout_interval *= 2
         print(f"elapsed time: {time.time()-sendStart}")
 
