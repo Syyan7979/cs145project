@@ -106,7 +106,7 @@ def InputParsing():
 
 def InitializeClientSocket(portNum):
     global clientSocket
-    clientSocket.bind(('localhost', portNum))
+    clientSocket.bind(('', portNum))
 
 def InitializeData(pathName):
     global full_payload
