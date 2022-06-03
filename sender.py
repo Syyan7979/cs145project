@@ -120,7 +120,7 @@ def compute_checksum(packet):
 
 def ParseAckMessage(message, packetSent):
     ackNumber = int(message[3:10])
-    checkSum = True if packetSent == message[23:]
+    checkSum = True if packetSent == message[23:] else False
     return ackNumber, checkSum
 
 def InputParsing():
