@@ -74,9 +74,11 @@ def Protocol():
             if (slowStart and not congestionAvoidance and not stasis and ackNumber == seqNum):
                 prevMSS = MSS
                 MSS *= 2
+                seqNum += 1
             elif (not slowStart and congestionAvoidance and not stasis and ackNumber == seqNum):
                 prevMSS = MSS
                 MSS += 1
+                seqNum += 1
 
             SampleRTT = end - start
             DevRTT = ((1-beta) * DevRTT) + (beta*abs(SampleRTT-estimate_time))
