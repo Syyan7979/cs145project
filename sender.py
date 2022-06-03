@@ -69,16 +69,13 @@ def Protocol():
             ackPacket = clientSocket.recvfrom(4096)[0].decode()
             end = time.time() # returns the time for when the
             ackNumber, checkSum = ParseAckMessage(ackPacket)
-            print(ackNumber)
 
             if ((slowStart == True) and (congestionAvoidance == False) and (stasis == False) and (ackNumber == seqNum)):
                 prevMSS = MSS
-                startPos += MSS
                 MSS *= 2
                 seqNum += 1
             elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False) and (ackNumber == seqNum)):
                 prevMSS = MSS
-                startPos += MSS
                 MSS += 1
                 seqNum += 1
 
