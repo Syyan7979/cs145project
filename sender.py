@@ -38,9 +38,6 @@ def Protocol():
     MSS = 2
     startPos = 0
 
-    maxPos = 0
-    minPos = 0
-
     seqNum = 0
     ackNumber = -1
 
@@ -81,9 +78,9 @@ def Protocol():
                 MSS *= 2
                 seqNum += 1
             elif (congestionAvoidance and ackNumber == seqNum):
+                prevMSS = MSS
                 startPos += MSS
-                minPos = MSS
-                MSS = (minPos + maxPos)//2
+                MSS += 1
                 seqNum += 1
             else:
                 startPos += MSS
@@ -95,19 +92,16 @@ def Protocol():
             timeout_interval = estimate_time + (4*DevRTT)
         except socket.timeout:
             if ((slowStart == True) and (congestionAvoidance == False) and (stasis == False)):
+                MSS = prevMSS
                 if ackNumber > -1:
-                    maxPos = MSS
-                    minPos = prevMSS
-                    MSS = (minPos + maxPos)//2
                     slowStart = False
                     congestionAvoidance = True
-                else:
-                    MSS = prevMSS
-                    timeout_interval *= 2
+                    counter = 0
             elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
-                maxPos = MSS
-                MSS = (minPos + maxPos)//2
-                timeout_interval /=2
+                MSS = MSS - 1
+                congestionAvoidance = False
+                stasis = True
+            timeout_interval *= 2
         print(f"elapsed time: {time.time()-sendStart}")
 
 def ParseAckMessage(message):
