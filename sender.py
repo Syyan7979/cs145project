@@ -41,9 +41,9 @@ def Protocol():
     seqNum = 0
 
     # Timer calculation related variables
-    estimate_time = 3 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
+    estimate_time = 6 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
     DevRTT = estimate_time/2 # initializing DevRTT to initial estimated RTT divided by 2, which will be updated accordingly once we get a sample RTT
-    timeout_interval = 3
+    timeout_interval = 6
     alpha = 0.125
     beta = 0.25
 
@@ -53,6 +53,7 @@ def Protocol():
         # Responsible for setting the timeout value of our socket
         clientSocket.settimeout(timeout_interval)
         print(seqNum)
+        print(timeout_interval)
 
         # z gets 1 whenever the currentPosition + the size of the payload is greater than the lenght of the whole data
         z = 1 if startPos + MSS >= len(full_payload) else 0
@@ -100,7 +101,7 @@ def Protocol():
             elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
                 MSS = prevMSS
                 congestionAvoidance = False
-                slowStart = True
+                stasis = True
         print(f"elapsed time: {time.time()-sendStart}")
 
 def ParseAckMessage(message):
