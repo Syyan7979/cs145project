@@ -32,9 +32,9 @@ def Protocol():
     # States
     slowStart = True
     congestionAvoidance = False
+    stasis = False
 
-    MSS = 20
-    cwnd = 1 * MSS
+    MSS = 1
     startPos = 0
     timeoutCounter = 0
     ssthresh = 200
@@ -54,8 +54,8 @@ def Protocol():
         print(seqNum)
 
         # z gets 1 whenever the currentPosition + the size of the payload is greater than the lenght of the whole data
-        z = 1 if startPos + cwnd >= len(full_payload) else 0
-        endpos = startPos + cwnd
+        z = 1 if startPos + mss >= len(full_payload) else 0
+        endpos = startPos + mss
         if startPos + cwnd >= len(full_payload):
             dataPacket = f"ID{uniqueID}SN{seqNum:07d}TXN{transactionID:07d}LAST{z}{full_payload[startPos:]}".encode("ascii")
         else:
@@ -69,17 +69,10 @@ def Protocol():
             end = time.time() # returns the time for when the
             ackNumber, checkSum = ParseAckMessage(ackPacket)
 
-            if (slowStart and not congestionAvoidance and ackNumber == seqNum):
-                startPos += cwnd
-                cwnd += MSS
-                seqNum += 1
-                if (cwnd >= ssthresh):
-                    slowStart = False
-                    congestionAvoidance = True
-            elif (not slowStart and congestionAvoidance and ackNumber == seqNum):
-                startPos += cwnd
-                cwnd = cwnd + int(MSS * (MSS/cwnd))
-                seqNum += 1
+            if (slowStart and not congestionAvoidance and not stasis and ackNumber == seqNum):
+                mss *= 2
+            elif (not slowStart and congestionAvoidance and not stasis and ackNumber == seqNum):
+                mss += 1
 
             SampleRTT = end - start
             DevRTT = ((1-beta) * DevRTT) + (beta*abs(SampleRTT-estimate_time))
@@ -88,11 +81,14 @@ def Protocol():
 
 
         except socket.timeout:
-            ssthresh = cwnd//2
-            cwnd = 1 * MSS
-            if (not slowStart and congestionAvoidance):
-                slowStart = True
+            if (slowStart and not congestionAvoidance and not stasis):
+                mss //= 2
+                slowStart = False
+                congestionAvoidance = True
+            elif (not slowStart and congestionAvoidance and not stasis):
+                mss -= 1
                 congestionAvoidance = False
+                stasis = True
         print(f"elapsed time: {time.time()-sendStart}")
 
 def ParseAckMessage(message):
