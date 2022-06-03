@@ -24,8 +24,8 @@ def Protocol():
     clientSocket.sendto(intentMessage, (IP_address, receiverPort))
 
     # Receiving Accept Message
-    acceptMessage = clientSocket.recvfrom(1024)
-    transactionID = int(acceptMessage.decode()[0])
+    acceptMessage = clientSocket.recvfrom(1024)[0]
+    transactionID = int(acceptMessage.decode())
 
     MSS = 1
     startPos = 0
