@@ -89,7 +89,11 @@ def Protocol():
                 seqNum += 1
 
             if (firstSuccess == False):
-                timeout_interval = time.time() - sendStart + 0.125
+                timeout_interval = time.time() - sendStart
+                MSS = len(full_payload)//(95/timeout_interval)
+                timeout_interval += 0.125
+                congestionAvoidance = True
+                slowStart = False
                 firstSuccess = True
             """SampleRTT = end - start
             DevRTT = ((1-beta) * DevRTT) + (beta*abs(SampleRTT-estimate_time))
@@ -101,7 +105,6 @@ def Protocol():
                 if ackNumber > -1:
                     slowStart = False
                     congestionAvoidance = True
-                    counter = 0
                 if firstSuccess == False:
                     timeout_interval *= 2
             elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
