@@ -89,7 +89,7 @@ def Protocol():
                 seqNum += 1
 
             if (firstSuccess == False):
-                timeout_interval = time.time() - sendStart
+                timeout_interval = time.time() - sendStart + 0.125
                 firstSuccess = True
             """SampleRTT = end - start
             DevRTT = ((1-beta) * DevRTT) + (beta*abs(SampleRTT-estimate_time))
