@@ -102,11 +102,12 @@ def Protocol():
                     slowStart = False
                     congestionAvoidance = True
                     counter = 0
+                    timeout_interval *= 2
             elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
                 MSS = MSS - 1
                 congestionAvoidance = False
                 stasis = True
-            timeout_interval *= 2
+
         print(f"elapsed time: {time.time()-sendStart}")
 
 def ParseAckMessage(message):
