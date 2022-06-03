@@ -83,7 +83,7 @@ def Protocol():
             estimate_time = ((1-alpha) * estimate_time) + (alpha * SampleRTT)
             timeout_interval = estimate_time + (4*DevRTT)
         except socket.timeout:
-            print(timeout)
+            print("timeout")
             if (slowStart and not congestionAvoidance and not stasis):
                 MSS = prevMSS
                 slowStart = False
