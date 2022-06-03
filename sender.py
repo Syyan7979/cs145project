@@ -32,11 +32,11 @@ def Protocol():
     slowStart = True
     congestionAvoidance = False
 
-    MSS = 20
+    MSS = 40
     cwnd = 1 * MSS
     startPos = 0
     timeoutCounter = 0
-    ssthresh = 100
+    ssthresh = 400
 
     seqNum = 0
 
