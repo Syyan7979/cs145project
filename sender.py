@@ -28,7 +28,7 @@ def Protocol():
     transactionID = int(acceptMessage.decode())
     print(transactionID)
 
-    MSS = 100
+    MSS = 1
     startPos = 0
     timeoutCounter = 0
 
