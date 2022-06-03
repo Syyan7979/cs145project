@@ -2,6 +2,7 @@ import socket # For the low-level network socket module
 import sys # For parsing the comand line input
 import os
 import time
+import hashlib
 
 # Default values and can be updated
 file_path = "09cfd2c6.txt"
@@ -72,14 +73,14 @@ def Protocol():
         try:
             ackPacket = clientSocket.recvfrom(4096)[0].decode()
             end = time.time() # returns the time for when the
-            ackNumber, checkSum = ParseAckMessage(ackPacket)
+            ackNumber, checkSum = ParseAckMessage(ackPacket, compute_checksum(dataPacket))
 
-            if (slowStart and ackNumber == seqNum):
+            if (slowStart and ackNumber == seqNum and checkSum):
                 prevMSS = MSS
                 startPos += MSS
                 MSS *= 2
                 seqNum += 1
-            elif (congestionAvoidance and ackNumber == seqNum):
+            elif (congestionAvoidance and ackNumber == seqNum and checkSum):
                 prevMSS = MSS
                 startPos += MSS
                 MSS += 1
@@ -114,9 +115,12 @@ def Protocol():
 
         print(f"elapsed time: {time.time()-sendStart}")
 
-def ParseAckMessage(message):
+def compute_checksum(packet):
+    return hashlib.md5(packet.encode('utf-8')).hexdigest()
+
+def ParseAckMessage(message, packetSent):
     ackNumber = int(message[3:10])
-    checkSum = message[23:]
+    checkSum = True if packetSent == message[23:]
     return ackNumber, checkSum
 
 def InputParsing():
