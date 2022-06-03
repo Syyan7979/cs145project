@@ -92,7 +92,7 @@ def Protocol():
         except socket.timeout:
             if ((slowStart == True) and (congestionAvoidance == False) and (stasis == False)):
                 MSS = prevMSS
-                if counter =< 3:
+                if counter <= 3:
                     counter += 1
                 else:
                     slowStart = False
