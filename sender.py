@@ -27,16 +27,17 @@ def Protocol():
     acceptMessage = clientSocket.recvfrom(1024)[0]
     transactionID = int(acceptMessage.decode())
     print(transactionID)
+    sendStart = time.time()
 
     # States
     slowStart = True
     congestionAvoidance = False
 
-    MSS = 40
+    MSS = 30
     cwnd = 1 * MSS
     startPos = 0
     timeoutCounter = 0
-    ssthresh = 400
+    ssthresh = 300
 
     seqNum = 0
 
@@ -85,12 +86,14 @@ def Protocol():
             estimate_time = ((1-alpha) * estimate_time) + (alpha * SampleRTT)
             timeout_interval = estimate_time + (4*DevRTT)
 
+
         except socket.timeout:
             ssthresh = cwnd//2
             cwnd = 1 * MSS
             if (not slowStart and congestionAvoidance):
                 slowStart = True
                 congestionAvoidance = False
+        print(f"elapsed time: {time.time()-sendStart}")
 
 def ParseAckMessage(message):
     ackNumber = int(message[3:10])
