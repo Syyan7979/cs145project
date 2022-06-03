@@ -45,6 +45,7 @@ def Protocol():
         # Responsible for setting the timeout value of our socket
         clientSocket.settimeout(timeout_interval)
         print(seqNum)
+        print(timeout_interval)
         # z gets 1 whenever the currentPosition + the size of the payload is greater than the lenght of the whole data
         z = 1 if startPos + MSS >= len(full_payload) else 0
         if startPos + MSS >= len(full_payload):
