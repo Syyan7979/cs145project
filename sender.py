@@ -37,15 +37,13 @@ def Protocol():
     prevMSS = 1
     MSS = 1
     startPos = 0
-    timeoutCounter = 0
-    ssthresh = 200
 
     seqNum = 0
 
     # Timer calculation related variables
-    estimate_time = 10 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
+    estimate_time = 3 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
     DevRTT = estimate_time/2 # initializing DevRTT to initial estimated RTT divided by 2, which will be updated accordingly once we get a sample RTT
-    timeout_interval = 10
+    timeout_interval = 3
     alpha = 0.125
     beta = 0.25
 
@@ -69,15 +67,16 @@ def Protocol():
             ackPacket = clientSocket.recvfrom(4096)[0].decode()
             end = time.time() # returns the time for when the
             ackNumber, checkSum = ParseAckMessage(ackPacket)
+            print(ackNumber)
 
-            if ((slowStart == True) and (congestionAvoidance == False) and (stasis == False) and (ackNumber == seqNum)):
+            if (slowStart and ackNumber == seqNum):
                 prevMSS = MSS
-                seqNum += MSS
+                startPos += MSS
                 MSS *= 2
                 seqNum += 1
-            elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False) and (ackNumber == seqNum)):
+            elif (congestionAvoidance and ackNumber == seqNum):
                 prevMSS = MSS
-                seqNum += MSS
+                startPos += MSS
                 MSS += 1
                 seqNum += 1
 
