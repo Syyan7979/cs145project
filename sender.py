@@ -68,16 +68,15 @@ def Protocol():
         try:
             ackPacket = clientSocket.recvfrom(4096)[0].decode()
             end = time.time() # returns the time for when the
-            print(ackPacket)
             ackNumber, checkSum = ParseAckMessage(ackPacket)
+            if(ackNumber == seqNum):
+                print("KAYAWA BA")
 
             if (slowStart and not congestionAvoidance and not stasis and ackNumber == seqNum):
-                print("fuck")
                 prevMSS = MSS
                 MSS *= 2
                 seqNum += 1
             elif (not slowStart and congestionAvoidance and not stasis and ackNumber == seqNum):
-                print("Yawa")
                 prevMSS = MSS
                 MSS += 1
                 seqNum += 1
