@@ -28,23 +28,23 @@ def Protocol():
     transactionID = int(acceptMessage.decode())
     print(transactionID)
 
-    MSS = 1
+    MSS = 100
     startPos = 0
     timeoutCounter = 0
 
     seqNum = 356
 
     # Timer calculation related variables
-    estimate_time = 10 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
+    estimate_time = 3 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
     DevRTT = estimate_time/2 # initializing DevRTT to initial estimated RTT divided by 2, which will be updated accordingly once we get a sample RTT
-    timeout_interval = 10
+    timeout_interval = 3
     alpha = 0.125
     beta = 0.25
 
     while startPos < len(full_payload):
         # Responsible for setting the timeout value of our socket
         clientSocket.settimeout(timeout_interval)
-
+        print(seqNum)
         # z gets 1 whenever the currentPosition + the size of the payload is greater than the lenght of the whole data
         z = 1 if startPos + MSS >= len(full_payload) else 0
         if startPos + MSS >= len(full_payload):
@@ -72,7 +72,7 @@ def Protocol():
                 MSS += 1
         except socket.timeout:
             if timeoutCounter == 0:
-                MSS /= 2
+                MSS = MSS // 2
                 MSS += 1
             elif timeoutCounter == 1:
                 MSS -= 1
