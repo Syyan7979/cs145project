@@ -26,6 +26,7 @@ def Protocol():
     # Receiving Accept Message
     acceptMessage = clientSocket.recvfrom(1024)[0]
     transactionID = int(acceptMessage.decode())
+    print(transactionID)
 
     MSS = 1
     startPos = 0
@@ -47,13 +48,13 @@ def Protocol():
         # z gets 1 whenever the currentPosition + the size of the payload is greater than the lenght of the whole data
         z = 1 if startPos + MSS >= len(full_payload) else 0
         if startPos + MSS >= len(full_payload):
-            dataPacket = f"ID{uniqueID}SN{seqNum:07d}TXN{transactionID:07d}LAST{z}{full_payload[startPos:]}"
+            dataPacket = f"ID{uniqueID}SN{seqNum:07d}TXN{transactionID:07d}LAST{z}{full_payload[startPos:]}".encode("ascii")
         else:
-            dataPacket = f"ID{uniqueID}SN{seqNum:07d}TXN{transactionID:07d}LAST{z}{full_payload[startPos:startPos+MSS]}"
+            dataPacket = f"ID{uniqueID}SN{seqNum:07d}TXN{transactionID:07d}LAST{z}{full_payload[startPos:startPos+MSS]}".encode("ascii")
         clientSocket.sendto(dataPacket, (IP_address, receiverPort))
         start = time.time()
         try:
-            ackPacket = clientSocket.recvfrom(4096).decode()[0]
+            ackPacket = clientSocket.recvfrom(4096)[0].decode()
             end = time.time() # returns the time for when the
             ackNumber, checkSum = ParseAckMessage(ackPacket)
             if (ackNumber == seqNum):
