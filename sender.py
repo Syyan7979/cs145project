@@ -78,6 +78,9 @@ def Protocol():
                 startPos += MSS
                 MSS += 1
                 seqNum += 1
+            else:
+                startPos += MSS
+                seqNum += 1
 
             SampleRTT = end - start
             DevRTT = ((1-beta) * DevRTT) + (beta*abs(SampleRTT-estimate_time))
