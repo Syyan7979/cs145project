@@ -34,6 +34,7 @@ def Protocol():
     congestionAvoidance = False
     stasis = False
 
+    prevMSS = 1
     MSS = 1
     startPos = 0
     timeoutCounter = 0
@@ -70,8 +71,10 @@ def Protocol():
             ackNumber, checkSum = ParseAckMessage(ackPacket)
 
             if (slowStart and not congestionAvoidance and not stasis and ackNumber == seqNum):
+                prevMSS = MSS
                 MSS *= 2
             elif (not slowStart and congestionAvoidance and not stasis and ackNumber == seqNum):
+                prevMSS = MSS
                 MSS += 1
 
             SampleRTT = end - start
@@ -82,11 +85,11 @@ def Protocol():
 
         except socket.timeout:
             if (slowStart and not congestionAvoidance and not stasis):
-                MSS //= 2
+                MSS = prevMSS
                 slowStart = False
                 congestionAvoidance = True
             elif (not slowStart and congestionAvoidance and not stasis):
-                MSS -= 1
+                MSS = prevMSS
                 congestionAvoidance = False
                 stasis = True
         print(f"elapsed time: {time.time()-sendStart}")
