@@ -54,8 +54,8 @@ def Protocol():
         print(seqNum)
 
         # z gets 1 whenever the currentPosition + the size of the payload is greater than the lenght of the whole data
-        z = 1 if startPos + mss >= len(full_payload) else 0
-        endpos = startPos + mss
+        z = 1 if startPos + MSS >= len(full_payload) else 0
+        endpos = startPos + MSS
         if startPos + cwnd >= len(full_payload):
             dataPacket = f"ID{uniqueID}SN{seqNum:07d}TXN{transactionID:07d}LAST{z}{full_payload[startPos:]}".encode("ascii")
         else:
