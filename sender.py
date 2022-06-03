@@ -68,6 +68,7 @@ def Protocol():
         try:
             ackPacket = clientSocket.recvfrom(4096)[0].decode()
             end = time.time() # returns the time for when the
+            print(ackPacket)
             ackNumber, checkSum = ParseAckMessage(ackPacket)
 
             if (slowStart and not congestionAvoidance and not stasis and ackNumber == seqNum):
@@ -81,9 +82,8 @@ def Protocol():
             DevRTT = ((1-beta) * DevRTT) + (beta*abs(SampleRTT-estimate_time))
             estimate_time = ((1-alpha) * estimate_time) + (alpha * SampleRTT)
             timeout_interval = estimate_time + (4*DevRTT)
-
-
         except socket.timeout:
+            print(timeout)
             if (slowStart and not congestionAvoidance and not stasis):
                 MSS = prevMSS
                 slowStart = False
