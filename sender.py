@@ -51,6 +51,7 @@ def Protocol():
             dataPacket = f"ID{uniqueID}SN{seqNum:07d}TXN{transactionID:07d}LAST{z}{full_payload[startPos:]}".encode("ascii")
         else:
             endpos = startPos + MSS
+            print(endpos, type(endpos), type(startPos))
             dataPacket = f"ID{uniqueID}SN{seqNum:07d}TXN{transactionID:07d}LAST{z}{full_payload[startPos:endpos]}".encode("ascii")
         clientSocket.sendto(dataPacket, (IP_address, receiverPort))
         start = time.time()
