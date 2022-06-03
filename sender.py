@@ -93,7 +93,7 @@ def Protocol():
 
             SampleRTT = end - start
             if firstAck == False:
-                timeout_interval = SampleRTT
+                timeout_interval = timeout_interval + 0.1
                 firstAck = True
             """DevRTT = ((1-beta) * DevRTT) + (beta*abs(SampleRTT-estimate_time))
             estimate_time = ((1-alpha) * estimate_time) + (alpha * SampleRTT)
