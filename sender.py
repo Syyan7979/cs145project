@@ -95,9 +95,9 @@ def InputParsing():
         if (args[i] == "-a"):
             IP_address = args[i+1]
         if (args[i] == "-s"):
-            receiverPort = args[i+1]
+            receiverPort = int(args[i+1])
         if (args[i] == "-c"):
-            senderPort = args[i+1]
+            senderPort = int(args[i+1])
         if (args[i] == "-i"):
             uniqueID = args[i+1]
 
