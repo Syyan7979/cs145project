@@ -32,7 +32,7 @@ def Protocol():
     startPos = 0
     timeoutCounter = 0
 
-    seqNum = 356
+    seqNum = 0
 
     # Timer calculation related variables
     estimate_time = 3 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
@@ -55,6 +55,7 @@ def Protocol():
             dataPacket = f"ID{uniqueID}SN{seqNum:07d}TXN{transactionID:07d}LAST{z}{full_payload[startPos:endpos]}".encode("ascii")
         clientSocket.sendto(dataPacket, (IP_address, receiverPort))
         start = time.time()
+
         try:
             ackPacket = clientSocket.recvfrom(4096)[0].decode()
             end = time.time() # returns the time for when the
