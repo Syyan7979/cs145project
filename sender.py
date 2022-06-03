@@ -83,7 +83,7 @@ def Protocol():
             elif (congestionAvoidance and ackNumber == seqNum):
                 startPos += MSS
                 minPos = MSS
-                MSS = int(mean(minPos, maxPos))
+                MSS = (minPos + maxPos)//2
                 seqNum += 1
             else:
                 startPos += MSS
@@ -98,14 +98,14 @@ def Protocol():
                 if ackNumber > -1:
                     maxPos = MSS
                     minPos = prevMSS
-                    MSS = int(mean(minPos, maxPos))
+                    MSS = (minPos + maxPos)//2
                     slowStart = False
                     congestionAvoidance = True
                 else:
                     MSS = prevMSS
             elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
                 maxPos = MSS
-                MSS = int(mean(minPos, maxPos))
+                MSS = (minPos + maxPos)//2
             timeout_interval *= 2
         print(f"elapsed time: {time.time()-sendStart}")
 
