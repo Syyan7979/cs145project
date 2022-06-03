@@ -67,14 +67,14 @@ def Protocol():
             end = time.time() # returns the time for when the
             ackNumber, checkSum = ParseAckMessage(ackPacket)
 
-            if (slowStart and !congestionAvoidance and ackNumber == seqNum):
+            if (slowStart and not congestionAvoidance and ackNumber == seqNum):
                 startPos += cwnd
                 cwnd += MSS
                 seqNum += 1
                 if (cwnd >= ssthresh):
                     slowStart = False
                     congestionAvoidance = True
-            elif (!slowStart and congestionAvoidance and ackNumber == seqNum):
+            elif (not slowStart and congestionAvoidance and ackNumber == seqNum):
                 startPos += cwnd
                 cwnd = cwnd + int(MSS * (MSS/cwnd))
                 seqNum += 1
@@ -87,7 +87,7 @@ def Protocol():
         except socket.timeout:
             ssthresh = cwnd//2
             cwnd = 1 * MSS
-            if (!slowStart and congestionAvoidance):
+            if (not slowStart and congestionAvoidance):
                 slowStart = True
                 congestionAvoidance = False
 
