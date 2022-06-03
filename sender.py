@@ -103,10 +103,10 @@ def Protocol():
                     congestionAvoidance = True
                 else:
                     MSS = prevMSS
+                    timeout_interval *= 2
             elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
                 maxPos = MSS
                 MSS = (minPos + maxPos)//2
-            timeout_interval *= 2
         print(f"elapsed time: {time.time()-sendStart}")
 
 def ParseAckMessage(message):
