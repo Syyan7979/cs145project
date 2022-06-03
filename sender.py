@@ -39,6 +39,7 @@ def Protocol():
     startPos = 0
 
     seqNum = 0
+    ackNumber = -1
 
     # Timer calculation related variables
     estimate_time = 3 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
@@ -92,9 +93,7 @@ def Protocol():
         except socket.timeout:
             if ((slowStart == True) and (congestionAvoidance == False) and (stasis == False)):
                 MSS = prevMSS
-                if counter <= 3:
-                    counter += 1
-                else:
+                if ackNumber > -1:
                     slowStart = False
                     congestionAvoidance = True
                     counter = 0
