@@ -26,7 +26,7 @@ def Protocol():
     # Receiving Accept Message
     acceptMessage = clientSocket.recvfrom(1024)[0]
     transactionID = int(acceptMessage.decode())
-    print(transactionID)
+    print(f"Transation ID: transactionID")
     sendStart = time.time()
 
     # States
@@ -55,8 +55,6 @@ def Protocol():
     while startPos < len(full_payload):
         # Responsible for setting the timeout value of our socket
         clientSocket.settimeout(timeout_interval)
-        print(seqNum)
-        print(timeout_interval)
 
         # z gets 1 whenever the currentPosition + the size of the payload is greater than the lenght of the whole data
         z = 1 if startPos + MSS >= len(full_payload) else 0
@@ -65,7 +63,6 @@ def Protocol():
             dataPacket = f"ID{uniqueID}SN{seqNum:07d}TXN{transactionID:07d}LAST{z}{full_payload[startPos:]}".encode("ascii")
         else:
             dataPacket = f"ID{uniqueID}SN{seqNum:07d}TXN{transactionID:07d}LAST{z}{full_payload[startPos:endpos]}".encode("ascii")
-        print(f"startPos: {startPos}, endpos: {endpos}")
         clientSocket.sendto(dataPacket, (IP_address, receiverPort))
         start = time.time()
 
@@ -73,16 +70,9 @@ def Protocol():
             ackPacket = clientSocket.recvfrom(4096)[0].decode()
             end = time.time() # returns the time for when the
             ackNumber, checkSum = ParseAckMessage(ackPacket, compute_checksum(dataPacket.decode("ascii")))
-            print(ackNumber, checkSum)
 
             if (congestionAvoidance and ackNumber == seqNum and checkSum):
-                startPos += MSS
-                seqNum += 1
-                """prevMSS = MSS
-                startPos += MSS
-                MSS += 4
-                seqNum += 1"""
-            else:
+
                 startPos += MSS
                 seqNum += 1
 
@@ -96,10 +86,6 @@ def Protocol():
         except socket.timeout:
             if congestionAvoidance == True:
                 MSS = prevMSS
-                congestionAvoidance = False
-                stasis = True
-
-        print(f"elapsed time: {time.time()-sendStart}")
 
 def compute_checksum(packet):
     return hashlib.md5(packet.encode('utf-8')).hexdigest()
