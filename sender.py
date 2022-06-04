@@ -26,7 +26,7 @@ def Protocol():
     # Receiving Accept Message
     acceptMessage = clientSocket.recvfrom(1024)[0]
     transactionID = int(acceptMessage.decode())
-    print(f"Transation ID: transactionID")
+    print(f"Transaction ID: {transactionID}")
     sendStart = time.time()
 
     # States
@@ -72,7 +72,13 @@ def Protocol():
             ackNumber, checkSum = ParseAckMessage(ackPacket, compute_checksum(dataPacket.decode("ascii")))
 
             if (congestionAvoidance and ackNumber == seqNum and checkSum):
-
+                startPos += MSS
+                seqNum += 1
+                """prevMSS = MSS
+                startPos += MSS
+                MSS += 4
+                seqNum += 1"""
+            else:
                 startPos += MSS
                 seqNum += 1
 
@@ -86,6 +92,9 @@ def Protocol():
         except socket.timeout:
             if congestionAvoidance == True:
                 MSS = prevMSS
+                congestionAvoidance = False
+                stasis = True
+
 
 def compute_checksum(packet):
     return hashlib.md5(packet.encode('utf-8')).hexdigest()
