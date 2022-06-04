@@ -36,8 +36,8 @@ def Protocol():
 
     firstSuccess = False
 
-    prevMSS = 2
-    MSS = 2
+    prevMSS = 1
+    MSS = 1
     startPos = 0
 
     seqNum = 0
@@ -77,7 +77,7 @@ def Protocol():
             if (congestionAvoidance and ackNumber == seqNum and checkSum):
                 prevMSS = MSS
                 startPos += MSS
-                MSS += 2
+                MSS += 4
                 seqNum += 1
             else:
                 startPos += MSS
@@ -91,10 +91,7 @@ def Protocol():
                 firstSuccess = True
 
         except socket.timeout:
-            print("---------------")
-            print("timeout", prevMSS, MSS)
-            print("---------------")
-            if ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
+            if congestionAvoidance == True:
                 MSS = prevMSS
                 congestionAvoidance = False
                 stasis = True
