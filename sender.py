@@ -74,13 +74,10 @@ def Protocol():
             end = time.time() # returns the time for when the
             ackNumber, checkSum = ParseAckMessage(ackPacket, compute_checksum(dataPacket.decode("ascii")))
 
-            if (slowStart and ackNumber == seqNum and checkSum):
+            if (congestionAvoidance and ackNumber == seqNum and checkSum):
                 prevMSS = MSS
                 startPos += MSS
-                MSS *= 2
-                seqNum += 1
-            elif (congestionAvoidance and ackNumber == seqNum and checkSum):
-                startPos += MSS
+                MSS += 4
                 seqNum += 1
             else:
                 startPos += MSS
@@ -91,22 +88,11 @@ def Protocol():
                 MSS = int(len(full_payload)//(95/timeout_interval))
                 timeout_interval += 0.125
                 congestionAvoidance = True
-                slowStart = False
                 firstSuccess = True
-            """SampleRTT = end - start
-            DevRTT = ((1-beta) * DevRTT) + (beta*abs(SampleRTT-estimate_time))
-            estimate_time = ((1-alpha) * estimate_time) + (alpha * SampleRTT)
-            timeout_interval = estimate_time + (4*DevRTT)"""
+
         except socket.timeout:
-            if ((slowStart == True) and (congestionAvoidance == False) and (stasis == False)):
+            if ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
                 MSS = prevMSS
-                if ackNumber > -1:
-                    slowStart = False
-                    congestionAvoidance = True
-                if firstSuccess == False:
-                    timeout_interval *= 2
-            elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
-                MSS = MSS - 1
                 congestionAvoidance = False
                 stasis = True
 
