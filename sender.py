@@ -76,10 +76,12 @@ def Protocol():
             print(ackNumber, checkSum)
 
             if (congestionAvoidance and ackNumber == seqNum and checkSum):
-                prevMSS = MSS
+                startPos += MSS
+                seqNum += 1
+                """prevMSS = MSS
                 startPos += MSS
                 MSS += 4
-                seqNum += 1
+                seqNum += 1"""
             else:
                 startPos += MSS
                 seqNum += 1
