@@ -74,10 +74,6 @@ def Protocol():
             if (congestionAvoidance and ackNumber == seqNum and checkSum):
                 startPos += MSS
                 seqNum += 1
-                """prevMSS = MSS
-                startPos += MSS
-                MSS += 4
-                seqNum += 1"""
             else:
                 startPos += MSS
                 seqNum += 1
@@ -91,9 +87,7 @@ def Protocol():
 
         except socket.timeout:
             if congestionAvoidance == True:
-                MSS = prevMSS
-                congestionAvoidance = False
-                stasis = True
+                MSS -= 1
 
 
 def compute_checksum(packet):
