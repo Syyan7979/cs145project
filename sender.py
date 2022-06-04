@@ -137,7 +137,7 @@ def InitializeClientSocket(portNum):
 def InitializeData(pathName):
     global full_payload
     file = open(pathName, 'r')
-    full_payload = file.read()
+    full_payload = file.readline().strip()
     file.close()
 
 if __name__ == "__main__":
