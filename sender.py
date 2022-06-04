@@ -91,6 +91,9 @@ def Protocol():
                 firstSuccess = True
 
         except socket.timeout:
+            print("---------------")
+            print("timeout", prevMSS, MSS)
+            print("---------------")
             if ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
                 MSS = prevMSS
                 congestionAvoidance = False
