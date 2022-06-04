@@ -44,9 +44,9 @@ def Protocol():
     ackNumber = -1
 
     # Timer calculation related variables
-    estimate_time = 3 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
+    estimate_time = 95 # intializing estimated RTT to 3, which will be updated accordingly once we get a sample RTT
     DevRTT = estimate_time/2 # initializing DevRTT to initial estimated RTT divided by 2, which will be updated accordingly once we get a sample RTT
-    timeout_interval = 3
+    timeout_interval = 95
     alpha = 0.125
     beta = 0.25
 
@@ -69,7 +69,18 @@ def Protocol():
         clientSocket.sendto(dataPacket, (IP_address, receiverPort))
         start = time.time()
 
-        try:
+        ackPacket = clientSocket.recvfrom(4096)[0].decode()
+        end = time.time() # returns the time for when the
+        ackNumber, checkSum = ParseAckMessage(ackPacket, compute_checksum(dataPacket.decode("ascii")))
+
+        if (firstSuccess == False):
+            timeout_interval = time.time() - sendStart
+            MSS = int(len(full_payload)//(95/timeout_interval))
+            timeout_interval += 0.125
+            firstSuccess = True
+
+
+        """try:
             ackPacket = clientSocket.recvfrom(4096)[0].decode()
             end = time.time() # returns the time for when the
             ackNumber, checkSum = ParseAckMessage(ackPacket, compute_checksum(dataPacket.decode("ascii")))
@@ -95,10 +106,10 @@ def Protocol():
                 congestionAvoidance = True
                 slowStart = False
                 firstSuccess = True
-            """SampleRTT = end - start
+            "SampleRTT = end - start
             DevRTT = ((1-beta) * DevRTT) + (beta*abs(SampleRTT-estimate_time))
             estimate_time = ((1-alpha) * estimate_time) + (alpha * SampleRTT)
-            timeout_interval = estimate_time + (4*DevRTT)"""
+            timeout_interval = estimate_time + (4*DevRTT)"
         except socket.timeout:
             if ((slowStart == True) and (congestionAvoidance == False) and (stasis == False)):
                 MSS = prevMSS
@@ -110,7 +121,7 @@ def Protocol():
             elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
                 MSS = MSS - 1
                 congestionAvoidance = False
-                stasis = True
+                stasis = True"""
 
         print(f"elapsed time: {time.time()-sendStart}")
 
