@@ -11,8 +11,7 @@ receiverPort = 9000
 senderPort = 6707
 uniqueID = "09cfd2c6"
 
-# initialization of sockets for server and client
-    # client
+# initialization of sockets for client
 clientSocket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 
 # Data value
