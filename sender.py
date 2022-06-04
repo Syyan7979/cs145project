@@ -69,18 +69,7 @@ def Protocol():
         clientSocket.sendto(dataPacket, (IP_address, receiverPort))
         start = time.time()
 
-        ackPacket = clientSocket.recvfrom(4096)[0].decode()
-        end = time.time() # returns the time for when the
-        ackNumber, checkSum = ParseAckMessage(ackPacket, compute_checksum(dataPacket.decode("ascii")))
-
-        if (firstSuccess == False):
-            timeout_interval = time.time() - sendStart
-            MSS = int(len(full_payload)//(95/timeout_interval))
-            timeout_interval += 0.125
-            firstSuccess = True
-
-
-        """try:
+        try:
             ackPacket = clientSocket.recvfrom(4096)[0].decode()
             end = time.time() # returns the time for when the
             ackNumber, checkSum = ParseAckMessage(ackPacket, compute_checksum(dataPacket.decode("ascii")))
@@ -91,9 +80,7 @@ def Protocol():
                 MSS *= 2
                 seqNum += 1
             elif (congestionAvoidance and ackNumber == seqNum and checkSum):
-                prevMSS = MSS
                 startPos += MSS
-                MSS += 1
                 seqNum += 1
             else:
                 startPos += MSS
@@ -106,10 +93,10 @@ def Protocol():
                 congestionAvoidance = True
                 slowStart = False
                 firstSuccess = True
-            "SampleRTT = end - start
+            """SampleRTT = end - start
             DevRTT = ((1-beta) * DevRTT) + (beta*abs(SampleRTT-estimate_time))
             estimate_time = ((1-alpha) * estimate_time) + (alpha * SampleRTT)
-            timeout_interval = estimate_time + (4*DevRTT)"
+            timeout_interval = estimate_time + (4*DevRTT)"""
         except socket.timeout:
             if ((slowStart == True) and (congestionAvoidance == False) and (stasis == False)):
                 MSS = prevMSS
@@ -121,7 +108,7 @@ def Protocol():
             elif ((slowStart == False) and (congestionAvoidance == True) and (stasis == False)):
                 MSS = MSS - 1
                 congestionAvoidance = False
-                stasis = True"""
+                stasis = True
 
         print(f"elapsed time: {time.time()-sendStart}")
 
