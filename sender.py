@@ -36,6 +36,7 @@ def Protocol():
     congestionAvoidance = False
 
     firstSuccess = False
+    start = True
 
     prevMSS = 1
     MSS = 1
@@ -65,7 +66,7 @@ def Protocol():
             end = time.time() # returns the time for when the
             ackNumber, checkSum = ParseAckMessage(ackPacket, compute_checksum(dataPacket.decode("ascii")))
 
-            if (congestionAvoidance and ackNumber == seqNum and checkSum):
+            if ((start and ackNumber == seqNum and checkSum) or (congestionAvoidance and ackNumber == seqNum and checkSum)):
                 startPos += MSS
                 seqNum += 1
 
@@ -75,6 +76,8 @@ def Protocol():
                 timeout_interval += 0.125
                 congestionAvoidance = True
                 firstSuccess = True
+                start = False
+
 
         except socket.timeout:
             if congestionAvoidance == True:
