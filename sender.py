@@ -99,11 +99,11 @@ def InputParsing():
         It parses the values entered in the terminal during the start of the program.
     """
     parser = argparse.ArgumentParser(description = 'sender.py program used for sending data packets to a server')
-    parser.add_argument('-f', '-filePath', metavar='', nargs ='?', type=str, help = "denotes the filename of the payload (default value: 09cfd2c6.txt)", const = '09cfd2c6.txt')
-    parser.add_argument('-a', '-ipAddress', metavar='', nargs ='?', type=str, help = "denotes the IP address of the receiver to be contacted (default value: 10.0.1.175; this is also the IP of the receiver that you will use when developing your project)", const = '10.0.1.175')
-    parser.add_argument('-s', '-receiver_Port', metavar='', nargs ='?', type=int, help = "denotes the port used by the receiver (default value: 9000; this is also the port of the receiver that you will use when developing your project)", const = 9000)
-    parser.add_argument('-c', '-sender_Port', metavar='', nargs ='?', type=int, help = "denotes the port used by the sender; this port is assigned per student, given at the same time as the unique ID (6707)", const = 6707)
-    parser.add_argument('-i', '-unique_ID', metavar='', nargs ='?', type=str, help = "denotes the unique ID; this ID is assigned per student, given at the same time as the port assigned to the student (default value: 09cfd2c6)", const = '09cfd2c6')
+    parser.add_argument('-f', '--filePath', metavar='', nargs ='?', type=str, help = "denotes the filename of the payload (default value: 09cfd2c6.txt)", const = '09cfd2c6.txt')
+    parser.add_argument('-a', '--ipAddress', metavar='', nargs ='?', type=str, help = "denotes the IP address of the receiver to be contacted (default value: 10.0.1.175; this is also the IP of the receiver that you will use when developing your project)", const = '10.0.1.175')
+    parser.add_argument('-s', '--receiver_Port', metavar='', nargs ='?', type=int, help = "denotes the port used by the receiver (default value: 9000; this is also the port of the receiver that you will use when developing your project)", const = 9000)
+    parser.add_argument('-c', '--sender_Port', metavar='', nargs ='?', type=int, help = "denotes the port used by the sender; this port is assigned per student, given at the same time as the unique ID (6707)", const = 6707)
+    parser.add_argument('-i', '--unique_ID', metavar='', nargs ='?', type=str, help = "denotes the unique ID; this ID is assigned per student, given at the same time as the port assigned to the student (default value: 09cfd2c6)", const = '09cfd2c6')
     args = parser.parse_args()
 
     global file_path # global file_path is needed in the function as we need to update file_path in the function and this ensures that no localbound error occurs
