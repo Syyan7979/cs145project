@@ -98,7 +98,7 @@ def InputParsing():
         Function InputParsing takes in no input argument(s) and returns no output argument(s).
         It parses the values entered in the terminal during the start of the program.
     """
-    parser = argpares.ArgumentParser(description = 'sender.py program used for sending data packets to a server')
+    parser = argparse.ArgumentParser(description = 'sender.py program used for sending data packets to a server')
     parser.add_argument('-f', 'filePath', metavar='', type=str, help = "denotes the filename of the payload (default value: 09cfd2c6.txt)", default = '09cfd2c6.txt')
     parser.add_argument('-a', 'ipAddress', metavar='', type=str, help = "denotes the IP address of the receiver to be contacted (default value: 10.0.1.175; this is also the IP of the receiver that you will use when developing your project)", default = '10.0.1.175')
     parser.add_argument('-s', 'receiver_Port', metavar='', type=int, help = "denotes the port used by the receiver (default value: 9000; this is also the port of the receiver that you will use when developing your project)", default = 9000)
