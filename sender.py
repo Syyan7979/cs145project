@@ -33,10 +33,11 @@ def Protocol():
     sendStart = time.time() # we now initialize the send start time given that when transactionID is sent by the server this implies that timer is starting. This will also help us when calculating processing time of first sent packet.
 
     # States
-    congestionAvoidance = False
+    start = True # Set to true at the start but when it receives the first packet from the probing of the network this will be set to false.
+    congestionAvoidance = False # CongestionAvoidance state starts when we already received the acknowledgement of the first packet we sent to probe the server and we've calculated the size of the packets to be sent out as well as the proccessing time of the server when it receives the first packet. Initially set to false and will be updated when firstSuccess variable is true.
 
-    firstSuccess = False
-    start = True
+
+    firstSuccess = False # This variable is used for checking on whether first successful pacet received
 
     prevMSS = 1
     MSS = 1
@@ -67,17 +68,15 @@ def Protocol():
             ackNumber, checkSum = ParseAckMessage(ackPacket, compute_checksum(dataPacket.decode("ascii")))
 
             if ((start and ackNumber == seqNum and checkSum) or (congestionAvoidance and ackNumber == seqNum and checkSum)):
+                if (firstSuccess == False):
+                    timeout_interval = time.time() - sendStart
+                    MSS = int(len(full_payload)//(95/timeout_interval))
+                    timeout_interval += 0.125
+                    congestionAvoidance = True
+                    firstSuccess = True
+                    start = False
                 startPos += MSS
                 seqNum += 1
-
-            if (firstSuccess == False):
-                timeout_interval = time.time() - sendStart
-                MSS = int(len(full_payload)//(95/timeout_interval))
-                timeout_interval += 0.125
-                congestionAvoidance = True
-                firstSuccess = True
-                start = False
-
 
         except socket.timeout:
             if congestionAvoidance == True:
