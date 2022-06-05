@@ -67,17 +67,16 @@ def Protocol():
             ackNumber, checkSum = ParseAckMessage(ackPacket, compute_checksum(dataPacket.decode("ascii")))
 
             if ((start and ackNumber == seqNum and checkSum) or (congestionAvoidance and ackNumber == seqNum and checkSum)):
-                startPos += MSS
-                seqNum += 1
-
-            if (firstSuccess == False):
-                timeout_interval = time.time() - sendStart
-                MSS = int(len(full_payload)//(95/timeout_interval))
-                timeout_interval += 0.125
-                congestionAvoidance = True
-                firstSuccess = True
-                start = False
-
+                if (firstSuccess == False):
+                    timeout_interval = time.time() - sendStart
+                    MSS = int(len(full_payload)//(95/timeout_interval))
+                    timeout_interval += 0.125
+                    congestionAvoidance = True
+                    firstSuccess = True
+                    start = False
+                else:
+                    startPos += MSS
+                    seqNum += 1
 
         except socket.timeout:
             if congestionAvoidance == True:
