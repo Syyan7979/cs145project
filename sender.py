@@ -56,7 +56,7 @@ def Protocol():
             dataPacket = f"ID{uniqueID}SN{seqNum:07d}TXN{transactionID:07d}LAST{z}{full_payload[startPos:endpos]}".encode("ascii") # else  we send a formatted string that contains the format ID{uniqueID}SN{seqNum:07d}TXN{transactionID:07d}LAST{z}{data starting at the position stored in startPos and the up to the position stored in endPos of the data stored in the full_payload variable} which is encoded using ascii.
         clientSocket.sendto(dataPacket, (IP_address, receiverPort)) # we then send the encoded message stored in the dataPacket variable to the server through the use of the sendto function built in the socket module.
 
-        # we then initiate the try-except mechanism of our program since we don't want our program to stop when we encounter a socket.timeout error which will occur given that we've updated the value of the timeout of our socket from none to the value in timeout_interval in line 52.
+        # we then initiate the try-except mechanism of our program since we don't want our program to stop when we encounter a socket.timeout error which will occur given that we've updated the value of the timeout of our socket from none to the value in timeout_interval in line 46.
         try:
             # we first try hearing a response from the server and if it doesn't respond in the alloted time then it must be the case that the packet we sent was wrong or got dropped by the queue.
             ackPacket = clientSocket.recvfrom(4096)[0].decode() # sender waits for the response from the server and if response occurs then we get only the value at index 0 since this is the message from the (byte, address) value pair that the recvfrom() function built in the socket module returns.
@@ -80,7 +80,7 @@ def Protocol():
 def compute_checksum(packet):
     """
         Function compute_checksum takes in one input argument and returns the checksum of the input argument.
-        It is getting the checksum of the dataPacket sent by the receiver to the server.
+        It is getting the checksum of the dataPacket sent by the sender protocol to the server.
     """
     return hashlib.md5(packet.encode('utf-8')).hexdigest() # uses the md5() function built in the hashlib module on the data packet and the the returned value is returned by the compute_checksum function.
 
@@ -98,13 +98,13 @@ def InputParsing():
         Function InputParsing takes in no input argument(s) and returns no output argument(s).
         It parses the values entered in the terminal during the start of the program.
     """
-    parser = argparse.ArgumentParser(description = 'sender.py program used for sending data packets to a server')
-    parser.add_argument('-f', '--filePath', metavar='', nargs ='?', type=str, help = "denotes the filename of the payload (default value: 09cfd2c6.txt)", const = '09cfd2c6.txt', default = '09cfd2c6.txt')
-    parser.add_argument('-a', '--ipAddress', metavar='', nargs ='?', type=str, help = "denotes the IP address of the receiver to be contacted (default value: 10.0.1.175; this is also the IP of the receiver that you will use when developing your project)", const = '10.0.1.175', default = '10.0.1.175')
-    parser.add_argument('-s', '--receiver_Port', metavar='', nargs ='?', type=int, help = "denotes the port used by the receiver (default value: 9000; this is also the port of the receiver that you will use when developing your project)", const = 9000, default = 9000)
-    parser.add_argument('-c', '--sender_Port', metavar='', nargs ='?', type=int, help = "denotes the port used by the sender; this port is assigned per student, given at the same time as the unique ID (6707)", const = 6707, default = 6707)
-    parser.add_argument('-i', '--unique_ID', metavar='', nargs ='?', type=str, help = "denotes the unique ID; this ID is assigned per student, given at the same time as the port assigned to the student (default value: 09cfd2c6)", const = '09cfd2c6', default = '09cfd2c6')
-    args = parser.parse_args()
+    parser = argparse.ArgumentParser(description = 'sender.py program used for sending data packets to a server') # initialize a ArgumentParser object that will hold all the information necessary to parse the command line into Python data types.
+    parser.add_argument('-f', '--filePath', metavar='', nargs ='?', type=str, help = "denotes the filename of the payload (default value: 09cfd2c6.txt)", const = '09cfd2c6.txt', default = '09cfd2c6.txt') # adding the -f flag for the path location of the file with its corresponding default and const value of type str to the parser object using the add_argument built in the argparse module, also added a help decription for when -h flag is added.
+    parser.add_argument('-a', '--ipAddress', metavar='', nargs ='?', type=str, help = "denotes the IP address of the receiver to be contacted (default value: 10.0.1.175; this is also the IP of the receiver that you will use when developing your project)", const = '10.0.1.175', default = '10.0.1.175') # adding the -a flag for the IP address of the server with its corresponding default and const value of type str to the parser object using the add_argument built in the argparse module, also added a help decription for when -h flag is added.
+    parser.add_argument('-s', '--receiver_Port', metavar='', nargs ='?', type=int, help = "denotes the port used by the receiver (default value: 9000; this is also the port of the receiver that you will use when developing your project)", const = 9000, default = 9000) # adding the -s flag for the receiver Port with its corresponding default and const value of type int to the parser object using the add_argument built in the argparse module, also added a help decription for when -h flag is added.
+    parser.add_argument('-c', '--sender_Port', metavar='', nargs ='?', type=int, help = "denotes the port used by the sender; this port is assigned per student, given at the same time as the unique ID (6707)", const = 6707, default = 6707) # adding the -c flag for the senderPort with its corresponding default and const value of type int to the parser object using the add_argument built in the argparse module, also added a help decription for when -h flag is added.
+    parser.add_argument('-i', '--unique_ID', metavar='', nargs ='?', type=str, help = "denotes the unique ID; this ID is assigned per student, given at the same time as the port assigned to the student (default value: 09cfd2c6)", const = '09cfd2c6', default = '09cfd2c6') # adding the -i flag for the unique ID with its corresponding default and const value of type str to the parser object using the add_argument built in the argparse module, also added a help decription for when -h flag is added.
+    args = parser.parse_args() # the arguments are then parsed using the parse_args() function built in the argparse module which returns
 
     global file_path # global file_path is needed in the function as we need to update file_path in the function and this ensures that no localbound error occurs
     global IP_address # global IP_address is needed in the function as we need to update IP_address in the function and this ensures that no localbound error occurs
@@ -112,11 +112,11 @@ def InputParsing():
     global senderPort # global senderPort is needed in the function as we need to update senderPort in the function and this ensures that no localbound error occurs
     global uniqueID # global uniqueID is needed in the function as we need to update uniqueID in the function and this ensures that no localbound error occurs
 
-    file_path = args.filePath
-    IP_address = args.ipAddress
-    receiverPort = args.receiver_Port
-    senderPort = args.sender_Port
-    uniqueID = args.unique_ID
+    file_path = args.filePath # setting the value of file_path variable to the parsed filePath argument
+    IP_address = args.ipAddress # setting the value of IP_address variable to the parsed ipAddress argument
+    receiverPort = args.receiver_Port # setting the value of receiverPort variable to the parsed receiver_Port argument
+    senderPort = args.sender_Port # setting the value of senderPort variable to the parsed sender_Port argument
+    uniqueID = args.unique_ID # setting the value of uniqueID variable to the parsed unique_ID argument
 
     InitializeClientSocket(senderPort) # calling the InitializeClientSocket() function with senderPort as the input argument to intialize the clientSocket socket variable.
     InitializeData(file_path) # calling the InitializeData() function with file_path as the input argument to initialize the file_path variable.
@@ -139,6 +139,6 @@ def InitializeData(pathName):
     full_payload = file.read() # read() method returns the specified number of bytes from the file and is then stored in the full_payload global variable.
     file.close() # close() method of a file object flushes any unwritten information and closes the file object, after which no more writing can be done.
 
-if __name__ == "__main__":
-    InputParsing()
-    Protocol()
+if __name__ == "__main__": # Python detects that this is the main program and will run the program
+    InputParsing() # program will then call the InputParsing() function to parse the input arguments in the terminal when the program was started.
+    Protocol() # After parsing the iputs the main Protocol function can now run as it now knows that the variables that it needs are updated or stayed with its default value after InputParsing() function was called.
